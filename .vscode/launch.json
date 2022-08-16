@@ -1,0 +1,22 @@
+{
+    "configurations": [
+
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "BusObservatoryGrabber:app.lambda_handler (python3.9)",
+            "invokeTarget": {
+                "target": "code",
+                "projectRoot": "${workspaceFolder}/BusObservatoryGrabber",
+                "lambdaHandler": "app.lambda_handler"
+            },
+            "lambda": {
+                "runtime": "python3.9",
+                "payload": {
+                    "path": "./events/event.json"
+                },
+                "environmentVariables": {}
+            }
+        }
+    ]
+}

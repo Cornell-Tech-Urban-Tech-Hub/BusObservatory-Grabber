@@ -1,0 +1,10 @@
+{
+  "body": "{\"message\": \"BusObservatoryGrabber\"}",
+  "resource": "/BusObservatoryGrabber",
+  "path": "/BusObservatoryGrabber",
+  "httpMethod": "GET",
+  "isBase64Encoded": false,
+  "queryStringParameters": {
+    "system_id":"tfnsw_buses"
+  }
+}

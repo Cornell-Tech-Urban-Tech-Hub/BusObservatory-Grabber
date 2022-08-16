@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  BusObservatoryGrabber
+
+  Sample SAM Template for BusObservatoryGrabber
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 600
+
+Resources:
+  #per https://stackoverflow.com/questions/71468496/why-does-sam-build-command-display-warning-serverlessrestapi-is-a-reservered-l
+  MyAPI:
+      Type: AWS::Serverless::Api
+      Properties:
+        StageName: Prod
+        # Cors:
+        #   AllowMethods: "'GET,POST,OPTIONS'"
+        #   AllowHeaders: "'content-type'"
+        #   AllowOrigin: "'*'"
+        #   AllowCredentials: True
+  BusObservatoryGrabberFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: BusObservatoryGrabber/
+      Handler: app.lambda_handler
+      MemorySize: 512
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        BusObservatoryGrabber:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /BusObservatoryGrabber
+            Method: get
+            RestApiId: !Ref MyAPI
+        ScheduledGrabber:
+          Type: Schedule
+          Properties:
+            Name: "BusObservatoryGrabber-tfnsw-sam"
+            Description: "Universal Grabber for Transport for New South Wales (tfnsw), deployed by SAM template."
+            Schedule: rate(1 minute)
+            #TODO: use count macro to read _bus_observatory_config.json and create a GrabberSchedule for each? 
+            Input: '{"queryStringParameters": {"system_id":"tfnsw_buses_test"}}'
+      Policies:
+        - S3WritePolicy:
+            BucketName: 'busobservatory'
+        - S3ReadPolicy:
+            BucketName: 'busobservatory'
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  BusObservatoryGrabberApi:
+    Description: "API Gateway endpoint URL for Prod stage for BusObservatoryGrabber function"
+    Value: !Sub "https://${MyAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/BusObservatoryGrabber/"
+  BusObservatoryGrabberFunction:
+    Description: "BusObservatoryGrabber Lambda Function ARN"
+    Value: !GetAtt BusObservatoryGrabberFunction.Arn
+  BusObservatoryGrabberFunctionIamRole:
+    Description: "Implicit IAM Role created for BusObservatoryGrabber function"
+    Value: !GetAtt BusObservatoryGrabberFunctionRole.Arn
