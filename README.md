@@ -3,6 +3,33 @@
 This project contains code and deployment information for a universal feed grabber AWS Lambda function to obtain needed configuration and scrape a bus data feed and write it to an S3 data lake.
 
 Takes a system_id in the query URL and reads config from S3 bucket.
+ 
+## setup
+Takes a config `config/_bus_observatory_config.json`file like
+
+```
+{
+    "tfnsw_buses_test":{
+        "feed_type":"gtfsrt",
+        "url":"https://api.transport.nsw.gov.au/v1/gtfs/vehiclepos/buses",
+        "api_key":"sfhas9fas9fa9sf9asf89asf89asf",
+        "header": "True",
+        "header_format": {
+            "key_name": "Authorization",
+            "template": "apikey {key_value}"
+            },
+        "route_key":"vehicle.route",
+        "tz": "Australia/Sydney"
+    },
+    "nyct_mta_bus_siri_test":{
+        "feed_type":"siri",
+        "url":"http://gtfsrt.prod.obanyc.com/vehiclePositions?key={}",
+        "api_key":"sfhas9fas9fa9sf9asf89asf89asf",
+        "header": "False",
+        "route_key":"route",
+        "tz": "America/New_York"
+    }
+```
 
 ## Testing
 
