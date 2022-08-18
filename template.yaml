@@ -37,14 +37,14 @@ Resources:
             Path: /BusObservatoryGrabber
             Method: get
             RestApiId: !Ref MyAPI
+        #TODO: use count macro to read _bus_observatory_config.json and create a GrabberSchedule for each? 
         ScheduledGrabber:
           Type: Schedule
           Properties:
             Name: "BusObservatoryGrabber-tfnsw-sam"
-            Description: "Universal Grabber for Transport for New South Wales (tfnsw), deployed by SAM template."
+            Description: "TEST Universal Grabber for Transport for New South Wales (tfnsw), deployed by SAM template."
             Schedule: rate(1 minute)
-            #TODO: use count macro to read _bus_observatory_config.json and create a GrabberSchedule for each? 
-            Input: '{"queryStringParameters": {"system_id":"tfnsw_buses_test"}}'
+            Input: '{"queryStringParameters": {"system_id":"TEST_tfnsw_buses"}}'
       Policies:
         - S3WritePolicy:
             BucketName: 'busobservatory'

@@ -3,7 +3,7 @@ import json
 import boto3
 import os
 import requests
-from lib import GTFSRT, DataLake
+from libraries import GTFSRT, DataLake
 # from lib import GTFSRT, SIRI, NJXML
 
 def lambda_handler(event, context):
@@ -23,7 +23,10 @@ def lambda_handler(event, context):
     except KeyError:
         raise Exception("No system_id specified")
     
-    # read config
+    ################################################################## 
+    # load system config from S3
+    ################################################################## 
+
     s3 = boto3.resource("s3")
     obj = s3.Object(bucket, config_object_key)
     
@@ -37,8 +40,9 @@ def lambda_handler(event, context):
                 "message": f"cannot find feed for system_id:{system_id}",
             }),
         } 
+        
     ################################################################## 
-    # fetch data
+    # fetch + parse data
     ##################################################################   
     if config['header'] == 'True':
         key_name = config['header_format']['key_name']
@@ -48,17 +52,19 @@ def lambda_handler(event, context):
     else:
         url = config['url'](config['api_key'])
         header = None
-    response = requests.get(url, headers=header)
-
-    ################################################################## 
-    # parse data
-    ##################################################################
-    if config['feed_type'] == "gtfsrt":
-        positions_df = GTFSRT.parse_feed(response,config)
-    # elif config['feed_type'] == "siri":
-    #     positions_df = SIRI.parse_feed(response,config)
-    # elif config['feed_type'] == "njxml":
-    #     positions_df = XML.parse_feed(response,config)
+    
+    # fire a different grabber for SIRI
+    if config['feed_type'] == "siri":
+        # positions_df = SIRI.parse_feed(response,config)
+        pass
+        
+    else:
+        response = requests.get(url, headers=header)
+        if config['feed_type'] == "gtfsrt":
+            positions_df = GTFSRT.parse_feed(response,config)
+        elif config['feed_type'] == "njxml":
+            # positions_df = XML.parse_feed(response,config)
+            pass
 
     ################################################################## 
     # dump to S3 as parquet 
