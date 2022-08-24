@@ -1,3 +1,4 @@
+trio
 requests
 pandas
 fastparquet

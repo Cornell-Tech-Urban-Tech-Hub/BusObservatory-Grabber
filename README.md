@@ -44,6 +44,10 @@ Then head over to
 
 `http://127.0.0.1:3000/BusObservatoryGrabber?system_id=tfnsw_buses`
 
+or
+
+`http://127.0.0.1:3000/BusObservatoryGrabber?system_id=TEST_tfnsw_buses`
+
 ### cloud
 
 Takes about 2-3 minutes on M1 MacBook Air laptop.
