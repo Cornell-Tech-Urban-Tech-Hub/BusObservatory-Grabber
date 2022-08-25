@@ -1,28 +1,19 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  BusObservatoryGrabber
+  BusObservatoryGrabber MASTER STACK all lambdas and events for obtaining data.
 
-  Sample SAM Template for BusObservatoryGrabber
-
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Timeout: 600
 
 Resources:
-  #per https://stackoverflow.com/questions/71468496/why-does-sam-build-command-display-warning-serverlessrestapi-is-a-reservered-l
   MyAPI:
       Type: AWS::Serverless::Api
       Properties:
         StageName: Prod
-        # Cors:
-        #   AllowMethods: "'GET,POST,OPTIONS'"
-        #   AllowHeaders: "'content-type'"
-        #   AllowOrigin: "'*'"
-        #   AllowCredentials: True
   BusObservatoryGrabberFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: BusObservatoryGrabber/
       Handler: app.lambda_handler
@@ -35,14 +26,17 @@ Resources:
             BucketName: 'busobservatory'
         - S3ReadPolicy:
             BucketName: 'busobservatory'
+        - S3WritePolicy:
+            BucketName: 'busobservatory-migration'
+        - S3ReadPolicy:
+            BucketName: 'busobservatory-migration'
       Events:
         BusObservatoryGrabber:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Type: Api
           Properties:
             Path: /BusObservatoryGrabber
             Method: get
             RestApiId: !Ref MyAPI
-        #TODO: use count macro to read _bus_observatory_config.json and create a GrabberSchedule for each? 
         ScheduledGrabber:
           Type: Schedule
           Properties:
@@ -51,11 +45,7 @@ Resources:
             Schedule: rate(1 minute)
             Input: '{"queryStringParameters": {"system_id":"TEST_tfnsw_buses"}}'
 
-
 Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   BusObservatoryGrabberApi:
     Description: "API Gateway endpoint URL for Prod stage for BusObservatoryGrabber function"
     Value: !Sub "https://${MyAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/BusObservatoryGrabber/"
