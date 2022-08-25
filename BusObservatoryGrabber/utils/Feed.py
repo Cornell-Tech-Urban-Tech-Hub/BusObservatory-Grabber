@@ -1,11 +1,11 @@
-import requests
-from utils.parsers import GTFSRT #, SIRI, CleverDevicesXML
+from utils.parsers import GTFSRT, CleverDevicesXML #, SIRI, 
 
 class Feed:
     def __init__(self, config, system_id) -> None:
         self.system_id = system_id
         self.config = config
         self.feed_type = config['feed_type']
+        self.timestamp_key = config['timestamp_key']
         self.tz = config['tz']
         self.parse_config(self.config)
     
@@ -25,12 +25,13 @@ class Feed:
     def fetch_gtfsrt(self):
         return GTFSRT.get_buses(self)
 
+    def fetch_njxml(self):
+        return CleverDevicesXML.get_feed(self)
+    
     # def fetch_siri(self):
     #     return SIRI.get_buses(self)
     
-    # def fetch_njxml(self):
-    #     return CleverDevicesXML.get_feed(self)
-    
+
     dispatch = {'gtfsrt': fetch_gtfsrt
             }
         

@@ -18,6 +18,8 @@ def get_buses(feed):
     # convert dict to dataframe
     positions_df=pd.json_normalize(buses_dict['entity'])
     
+    #FIXME: need to re-use this for NJ, SIRI?
+    
     # convert timestamp is 4 steps to get local time recorded properly in parquet
     
     # 1 convert POSIX timestamp to datetime
