@@ -6,6 +6,7 @@ class Feed:
         self.config = config
         self.feed_type = config['feed_type']
         self.timestamp_key = config['timestamp_key']
+        self.route_key = config['route_key']
         self.tz = config['tz']
         self.parse_config(self.config)
     
@@ -16,7 +17,7 @@ class Feed:
             self.header = {self.key_name:self.key_value}
             self.url = config['url']
         else:
-            self.url = config['url'](config['api_key'])
+            self.url = config['url']
             self.header = None
 
     # dispatch function associated with the feed_type
@@ -26,13 +27,14 @@ class Feed:
         return GTFSRT.get_buses(self)
 
     def fetch_njxml(self):
-        return CleverDevicesXML.get_feed(self)
+        return CleverDevicesXML.get_buses(self)
     
     # def fetch_siri(self):
     #     return SIRI.get_buses(self)
     
 
-    dispatch = {'gtfsrt': fetch_gtfsrt
+    dispatch = {'gtfsrt': fetch_gtfsrt,
+                'njxml': fetch_njxml
             }
         
     # dispatch = {'gtfsrt': fetch_gtfsrt,

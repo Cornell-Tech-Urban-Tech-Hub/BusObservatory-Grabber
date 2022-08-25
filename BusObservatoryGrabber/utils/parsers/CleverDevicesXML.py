@@ -17,7 +17,8 @@ def get_buses(feed):
     positions_df = positions_df.drop(['name','bus'], axis=1) 
     positions_df[["lat", "lon"]] = positions_df[["lat", "lon"]].apply(pd.to_numeric)
     
-    return fix_timestamp(feed.timestamp_key, positions_df)
+    # return fix_timestamp(feed.timestamp_key, positions_df)
+    return positions_df
 
 ####################################################################################
 # legacy code
