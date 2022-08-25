@@ -1,4 +1,5 @@
 trio
+asks
 requests
 pandas
 fastparquet

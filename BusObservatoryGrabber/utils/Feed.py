@@ -1,4 +1,4 @@
-from utils.parsers import GTFSRT, CleverDevicesXML #, SIRI, 
+from utils.parsers import GTFSRT, CleverDevicesXML, SIRI
 
 class Feed:
     def __init__(self, config, system_id) -> None:
@@ -29,19 +29,14 @@ class Feed:
     def fetch_njxml(self):
         return CleverDevicesXML.get_buses(self)
     
-    # def fetch_siri(self):
-    #     return SIRI.get_buses(self)
-    
+    def fetch_siri(self):
+        return SIRI.get_buses(self)
 
     dispatch = {'gtfsrt': fetch_gtfsrt,
-                'njxml': fetch_njxml
+                'njxml': fetch_njxml,
+                'siri': fetch_siri
             }
         
-    # dispatch = {'gtfsrt': fetch_gtfsrt,
-    #             'siri' : fetch_siri,
-    #             'njxml': fetch_njxml
-    #             }
-    
     def scrape_feed(self):
         return self.__class__.dispatch[self.feed_type](self)
         

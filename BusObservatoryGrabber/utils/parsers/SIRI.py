@@ -1,57 +1,55 @@
-################################################################## 
-################################################################## 
-# NEW CODE
-################################################################## 
-################################################################## 
-
 import trio
 import datetime as dt
 import requests
 import pandas as pd
+from dateutil import parser
 
+####################################################################################
+# new code
 
-#TODO: argument is a Feed object
 def get_buses(feed):
     
-    positions_df = pd.DataFrame()
+    # argument is a Feed object
     
+    system_id=feed.system_id
+    
+    api_url = feed.url
+    api_key_name = feed.key_name
+    api_key = feed.key_value
+    
+    # if its NYC, we need to do the async branch
+    if feed.system_id == "nyct_mta_siri_bus":
+        
+        async def grabber(s,a_path,route_id):
+            try:
+                r = await s.get(path=a_path, retries=2, timeout=10)
+                fetches.append({route_id:r})
+            except Exception as e:
+                print (f'\t{dt.datetime.now()}\tTimeout or too many retries for {route_id}.')
+
+        async def main(url_paths):
+            url_SIRI_root="http://bustime.mta.info"
+            from asks.sessions import Session
+            s = Session(url_SIRI_root, connections=25)
+            async with trio.open_nursery() as n:
+                for (route_id, path) in url_paths:
+                    n.start_soon(grabber, s, path, route_id )
+        fetches = []
+        trio.run(main, get_SIRI_urls())
+        positions_df = parse_buses(fetches)
+        
+    # else TBD other SIRI system
+    else:
+        positions_df=pd.DataFrame()
+ 
     return positions_df
 
-################################################################## 
-################################################################## 
-# OLD CODE
-################################################################## 
-################################################################## 
+####################################################################################
+# legacy code
+# 
 
-
-################################################################## 
-# configuration
-################################################################## 
-
-# aws
-aws_bucket_name="busobservatory"
-aws_region_name="us-east-1"
-
-# system to track
-# store api key in secret api_key_{system_id}
-# e.g. api_key_nyct_mta_bus_siri
-system_id="nyct_mta_bus_siri"
-mta_bustime_api_key = get_secret(f'api_key_{system_id}', aws_region_name)['agency_api_key']
-
-# endpoints
-url_OBA_routelist = "http://bustime.mta.info/api/where/routes-for-agency/MTA%20NYCT.json?key={}"
-url_SIRI_root="http://bustime.mta.info"
-url_SIRI_suffix="/api/siri/vehicle-monitoring.json?key={}&VehicleMonitoringDetailLevel=calls&LineRef={}"
-
-
-################################################################## 
-# get current routes
-##################################################################   
-
-# fetch from OBA API
-
-def get_OBA_routelist():
-    url = url_OBA_routelist.format(mta_bustime_api_key)
+def get_OBA_routelist(api_key_name, api_key):
+    url = "http://bustime.mta.info/api/where/routes-for-agency/MTA%20NYCT.json?{}={}".format(api_key_name, api_key)     
     try:
         response = requests.get(url, timeout=5)
     except Exception as e:
@@ -61,74 +59,39 @@ def get_OBA_routelist():
     return routes
 
 # generate list of SIRI endpoints to fetch
-def get_SIRI_urls():
+def get_SIRI_urls(api_key_name, api_key):
+    url_SIRI_suffix="/api/siri/vehicle-monitoring.json?{}={}&VehicleMonitoringDetailLevel=calls&LineRef={}"
     SIRI_urls_list = []
     routes=get_OBA_routelist()   
     for route in routes['data']['list']:
         route_id = route['id']
-
-        # entries as tuples vs dicts
         SIRI_urls_list.append(
             (
                 route_id,
-                url_SIRI_suffix.format(mta_bustime_api_key,route_id)
+                url_SIRI_suffix.format(api_key_name,api_key,route_id)
             )
-        )
-        
+        )    
     return SIRI_urls_list
 
-################################################################## 
-# fetch all routes, asynchronously
-##################################################################   
-
-async def grabber(s,a_path,route_id):
-    try:
-        r = await s.get(path=a_path, retries=2, timeout=10)
-        feeds.append({route_id:r})
-    except Exception as e:
-        print (f'\t{dt.datetime.now()}\tTimeout or too many retries for {route_id}.')
-
-async def main(url_paths):
-    from asks.sessions import Session
-    s = Session(url_SIRI_root, connections=25)
-    async with trio.open_nursery() as n:
-        for (route_id, path) in url_paths:
-            n.start_soon(grabber, s, path, route_id )
-
-feeds = []
-trio.run(main, get_SIRI_urls())
-
-################################################################## 
-# parse
-##################################################################   
-
-buses=[]   
-for route_report in feeds:
-    for route_id,route_data in route_report.items():
-        route = route_id.split('_')[1]
-        #FIXME: trap this more elegantly
-        try:
-            route_data=route_data.json()            
-            if 'VehicleActivity' in route_data['Siri']['ServiceDelivery']['VehicleMonitoringDelivery'][0]:
-                for monitored_vehicle_journey in route_data['Siri']['ServiceDelivery']['VehicleMonitoringDelivery'][0]['VehicleActivity']:
-                    bus = BusObservation(route, monitored_vehicle_journey)
-                    buses.append(bus)
-            else:
+def parse_buses(fetches):
+    buses=[]   
+    for route_report in fetches:
+        for route_id,route_data in route_report.items():
+            route = route_id.split('_')[1]
+            #FIXME: trap this more elegantly
+            try:
+                route_data=route_data.json()            
+                if 'VehicleActivity' in route_data['Siri']['ServiceDelivery']['VehicleMonitoringDelivery'][0]:
+                    for monitored_vehicle_journey in route_data['Siri']['ServiceDelivery']['VehicleMonitoringDelivery'][0]['VehicleActivity']:
+                        bus = BusObservation(route, monitored_vehicle_journey)
+                        buses.append(bus)
+                else:
+                    pass
+            except:
                 pass
-        except:
-            pass
-positions_df = pd.DataFrame([vars(x) for x in buses])
-positions_df['timestamp'] = positions_df['timestamp'].dt.tz_localize(None)
-
-
-
-
-
-################################################################## 
-# BusObservation
-##################################################################  
-
-from dateutil import parser
+    positions_df = pd.DataFrame([vars(x) for x in buses])
+    positions_df['timestamp'] = positions_df['timestamp'].dt.tz_localize(None)
+    return positions_df
 
 class BusObservation():
 
@@ -196,64 +159,3 @@ class BusObservation():
         except KeyError: #no VehicleActivity?
             pass
         return buses
-
-    def to_serial(self):
-        def serialize(obj):
-            # Recursively walk object's hierarchy.
-            if isinstance(obj, (bool, int, float)):
-                return obj
-            elif isinstance(obj, dict):
-                obj = obj.copy()
-                for key in obj:
-                    obj[key] = serialize(obj[key])
-                return obj
-            elif isinstance(obj, list):
-                return [serialize(item) for item in obj]
-            elif isinstance(obj, tuple):
-                return tuple(serialize([item for item in obj]))
-            elif hasattr(obj, '__dict__'):
-                return serialize(obj.__dict__)
-            else:
-                # return repr(obj) # Don't know how to handle, convert to string
-                return str(obj) # avoids single quotes around strings
-        # return json.dumps(serialize(self))
-        return serialize(self)
-
-
-
-################################################################## 
-# get_secrets
-##################################################################  
-
-import boto3
-import base64
-from botocore.exceptions import ClientError
-import json
-
-def get_secret(secret_name,aws_region_name):
-
-    session = boto3.session.Session()
-    client = session.client(
-        service_name='secretsmanager',
-        region_name=aws_region_name)
-
-    try:
-        get_secret_value_response = client.get_secret_value(
-            SecretId=secret_name
-        )
-    except ClientError as e:
-        if e.response['Error']['Code'] == 'DecryptionFailureException':
-            raise e
-        elif e.response['Error']['Code'] == 'InternalServiceErrorException':
-            raise e
-        elif e.response['Error']['Code'] == 'InvalidParameterException':
-            raise e
-        elif e.response['Error']['Code'] == 'InvalidRequestException':
-            raise e
-        elif e.response['Error']['Code'] == 'ResourceNotFoundException':
-            raise e
-    else:
-        if 'SecretString' in get_secret_value_response:
-            return json.loads(get_secret_value_response['SecretString'])
-        else:
-            return json.loads(base64.b64decode(get_secret_value_response['SecretBinary']))
