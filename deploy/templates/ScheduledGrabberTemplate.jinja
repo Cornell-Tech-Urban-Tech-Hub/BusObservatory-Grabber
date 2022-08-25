@@ -1,0 +1,7 @@
+        ScheduledGrabber{{n}}:
+          Type: Schedule
+          Properties:
+            Name: "BusObservatoryGrabber-{{system_id}}"
+            Description: "TEST Universal Grabber event trigger for {{system_name}} ({{system_id}})."
+            Schedule: rate(1 minute)
+            Input: '{"queryStringParameters": {"system_id":"{{system_id}}"}}'

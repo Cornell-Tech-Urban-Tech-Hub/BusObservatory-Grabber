@@ -1,22 +1,30 @@
 {
-    "configurations": [
+  "configurations": [
+    {
+      "name": "Python: Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
 
-        {
-            "type": "aws-sam",
-            "request": "direct-invoke",
-            "name": "BusObservatoryGrabber:app.lambda_handler (python3.9)",
-            "invokeTarget": {
-                "target": "code",
-                "projectRoot": "${workspaceFolder}/BusObservatoryGrabber",
-                "lambdaHandler": "app.lambda_handler"
-            },
-            "lambda": {
-                "runtime": "python3.9",
-                "payload": {
-                    "path": "./events/event.json"
-                },
-                "environmentVariables": {}
-            }
-        }
-    ]
+    {
+      "type": "aws-sam",
+      "request": "direct-invoke",
+      "name": "BusObservatoryGrabber:app.lambda_handler (python3.9)",
+      "invokeTarget": {
+        "target": "code",
+        "projectRoot": "${workspaceFolder}/BusObservatoryGrabber",
+        "lambdaHandler": "app.lambda_handler"
+      },
+      "lambda": {
+        "runtime": "python3.9",
+        "payload": {
+          "path": "./events/event.json"
+        },
+        "environmentVariables": {}
+      }
+    }
+  ]
 }

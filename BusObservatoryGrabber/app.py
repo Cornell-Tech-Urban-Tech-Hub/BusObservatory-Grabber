@@ -1,7 +1,7 @@
 import json
-from libraries.Feed import *
-from libraries.DataLake import *
-from libraries.Config import *
+from utils.Feed import *
+from utils.DataLake import *
+from utils.Config import *
 
 def lambda_handler(event, context):
     
