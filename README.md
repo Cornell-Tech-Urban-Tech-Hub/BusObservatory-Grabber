@@ -47,10 +47,9 @@ Then head over to
 or
 
 `http://127.0.0.1:3000/BusObservatoryGrabber?system_id=TEST_tfnsw_buses`
-
-or
-
 `http://127.0.0.1:3000/BusObservatoryGrabber?system_id=TEST_njtransit_bus`
+`http://127.0.0.1:3000/BusObservatoryGrabber?system_id=TEST_nyct_mta_bus_siri`
+`http://127.0.0.1:3000/BusObservatoryGrabber?system_id=TEST_nyct_mta_bus_gtfsrt`
 
 ### cloud
 

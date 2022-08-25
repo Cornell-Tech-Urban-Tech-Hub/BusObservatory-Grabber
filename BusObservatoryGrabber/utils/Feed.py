@@ -8,20 +8,25 @@ class Feed:
         self.timestamp_key = config['timestamp_key']
         self.route_key = config['route_key']
         self.tz = config['tz']
-        self.parse_config(self.config)
-    
-    def parse_config(self, config):
+        
+        # fields that may be present
+        try:
+            self.api_key = config['api_key']
+        except:
+            print("***********DIDNT FIND API KEY*********")
+            pass
+        
+        # configure header if relevant
         if config['header'] == 'True':
-            self.key_name = config['header_format']['key_name']
-            self.key_value = config['header_format']['template'].format(key_value=config['api_key']) 
-            self.header = {self.key_name:self.key_value}
+            self.header_key_name = config['header_format']['key_name']
+            self.header_key_value = config['header_format']['template'].format(key_value=config['api_key']) 
+            self.header = {self.header_key_name:self.header_key_value}
             self.url = config['url']
         else:
             self.url = config['url']
-            self.header = None
+            self.header = None        
 
-    # dispatch function associated with the feed_type
-    # returns a positions_df
+    # dispatch function associated with the feed_type (returns positions_df)
     
     def fetch_gtfsrt(self):
         return GTFSRT.get_buses(self)

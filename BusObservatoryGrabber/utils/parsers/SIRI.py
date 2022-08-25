@@ -8,17 +8,9 @@ from dateutil import parser
 # new code
 
 def get_buses(feed):
-    
-    # argument is a Feed object
-    
-    system_id=feed.system_id
-    
-    api_url = feed.url
-    api_key_name = feed.key_name
-    api_key = feed.key_value
-    
-    # if its NYC, we need to do the async branch
-    if feed.system_id == "nyct_mta_siri_bus":
+        
+    # for NYC SIRI only, iterate async calls for each route
+    if feed.system_id in ["nyct_mta_bus_siri","TEST_nyct_mta_bus_siri"]:
         
         async def grabber(s,a_path,route_id):
             try:
@@ -35,11 +27,16 @@ def get_buses(feed):
                 for (route_id, path) in url_paths:
                     n.start_soon(grabber, s, path, route_id )
         fetches = []
-        trio.run(main, get_SIRI_urls())
+        trio.run(main, get_SIRI_urls(feed))
         positions_df = parse_buses(fetches)
         
-    # else TBD other SIRI system
+    #TODO: write / refactor below for a general/non-NYC SIRI feed parser
     else:
+
+        # these aren't used for NYC but might be for general
+        system_id=feed.system_id
+        api_url = feed.url
+        api_key = feed.key_value
         positions_df=pd.DataFrame()
  
     return positions_df
@@ -48,8 +45,8 @@ def get_buses(feed):
 # legacy code
 # 
 
-def get_OBA_routelist(api_key_name, api_key):
-    url = "http://bustime.mta.info/api/where/routes-for-agency/MTA%20NYCT.json?{}={}".format(api_key_name, api_key)     
+def get_OBA_routelist(feed):
+    url = "http://bustime.mta.info/api/where/routes-for-agency/MTA%20NYCT.json?key={}".format(feed.api_key)     
     try:
         response = requests.get(url, timeout=5)
     except Exception as e:
@@ -59,16 +56,16 @@ def get_OBA_routelist(api_key_name, api_key):
     return routes
 
 # generate list of SIRI endpoints to fetch
-def get_SIRI_urls(api_key_name, api_key):
-    url_SIRI_suffix="/api/siri/vehicle-monitoring.json?{}={}&VehicleMonitoringDetailLevel=calls&LineRef={}"
+def get_SIRI_urls(feed):
+    url_SIRI_suffix="/api/siri/vehicle-monitoring.json?key={}&VehicleMonitoringDetailLevel=calls&LineRef={}"
     SIRI_urls_list = []
-    routes=get_OBA_routelist()   
+    routes=get_OBA_routelist(feed)   
     for route in routes['data']['list']:
         route_id = route['id']
         SIRI_urls_list.append(
             (
                 route_id,
-                url_SIRI_suffix.format(api_key_name,api_key,route_id)
+                url_SIRI_suffix.format(feed.api_key,route_id)
             )
         )    
     return SIRI_urls_list
