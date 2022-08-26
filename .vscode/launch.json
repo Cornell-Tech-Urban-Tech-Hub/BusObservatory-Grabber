@@ -1,6 +1,23 @@
 {
   "configurations": [
     {
+      "type": "aws-sam",
+      "request": "direct-invoke",
+      "name": "API BusObservatory-Grabber:BusObservatoryGrabberFunction",
+      "invokeTarget": {
+        "target": "api",
+        "templatePath": "${workspaceFolder}/template.yaml",
+        "logicalId": "BusObservatoryGrabberFunction"
+      },
+      "api": {
+        "path": "/",
+        "httpMethod": "get",
+        "payload": {
+          "json": {}
+        }
+      }
+    },
+    {
       "name": "Python: Current File",
       "type": "python",
       "request": "launch",
@@ -8,7 +25,6 @@
       "console": "integratedTerminal",
       "justMyCode": true
     },
-
     {
       "type": "aws-sam",
       "request": "direct-invoke",

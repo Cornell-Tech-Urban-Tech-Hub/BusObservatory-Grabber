@@ -22,10 +22,10 @@ Resources:
       Architectures:
         - arm64
       Policies:
-        - S3WritePolicy:
-            BucketName: 'busobservatory'
-        - S3ReadPolicy:
-            BucketName: 'busobservatory'
+        # - S3WritePolicy:
+        #     BucketName: 'busobservatory'
+        # - S3ReadPolicy:
+        #     BucketName: 'busobservatory'
         - S3WritePolicy:
             BucketName: 'busobservatory-migration'
         - S3ReadPolicy:
@@ -37,13 +37,34 @@ Resources:
             Path: /BusObservatoryGrabber
             Method: get
             RestApiId: !Ref MyAPI
-        ScheduledGrabber:
+        ScheduledGrabber1:
           Type: Schedule
           Properties:
-            Name: "BusObservatoryGrabber-tfnsw-sam"
-            Description: "TEST Universal Grabber for Transport for New South Wales (tfnsw), deployed by SAM template."
+            Name: "BusObservatoryGrabber-TEST_tfnsw_bus"
+            Description: "TEST Universal Grabber event trigger for Transport for New South Wales-Buses (TEST_tfnsw_bus)."
             Schedule: rate(1 minute)
-            Input: '{"queryStringParameters": {"system_id":"TEST_tfnsw_buses"}}'
+            Input: '{"queryStringParameters": {"system_id":"TEST_tfnsw_bus"}}'
+        ScheduledGrabber2:
+          Type: Schedule
+          Properties:
+            Name: "BusObservatoryGrabber-TEST_nyct_mta_bus_siri"
+            Description: "TEST Universal Grabber event trigger for MTA New York City Transit Buses (SIRI) (TEST_nyct_mta_bus_siri)."
+            Schedule: rate(1 minute)
+            Input: '{"queryStringParameters": {"system_id":"TEST_nyct_mta_bus_siri"}}'
+        ScheduledGrabber3:
+          Type: Schedule
+          Properties:
+            Name: "BusObservatoryGrabber-TEST_nyct_mta_bus_gtfsrt"
+            Description: "TEST Universal Grabber event trigger for MTA New York City Transit Buses (GTFS-RT) (TEST_nyct_mta_bus_gtfsrt)."
+            Schedule: rate(1 minute)
+            Input: '{"queryStringParameters": {"system_id":"TEST_nyct_mta_bus_gtfsrt"}}'
+        ScheduledGrabber4:
+          Type: Schedule
+          Properties:
+            Name: "BusObservatoryGrabber-TEST_njtransit_bus"
+            Description: "TEST Universal Grabber event trigger for NJTransit Buses (TEST_njtransit_bus)."
+            Schedule: rate(1 minute)
+            Input: '{"queryStringParameters": {"system_id":"TEST_njtransit_bus"}}'
 
 Outputs:
   BusObservatoryGrabberApi:

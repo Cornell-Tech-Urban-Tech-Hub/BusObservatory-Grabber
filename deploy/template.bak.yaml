@@ -43,7 +43,7 @@ Resources:
             Name: "BusObservatoryGrabber-tfnsw-sam"
             Description: "TEST Universal Grabber for Transport for New South Wales (tfnsw), deployed by SAM template."
             Schedule: rate(1 minute)
-            Input: '{"queryStringParameters": {"system_id":"TEST_tfnsw_buses"}}'
+            Input: '{"queryStringParameters": {"system_id":"TEST_tfnsw_bus"}}'
 
 Outputs:
   BusObservatoryGrabberApi:
