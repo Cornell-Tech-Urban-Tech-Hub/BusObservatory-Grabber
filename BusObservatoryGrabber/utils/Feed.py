@@ -13,7 +13,6 @@ class Feed:
         try:
             self.api_key = config['api_key']
         except:
-            print("***********DIDNT FIND API KEY*********")
             pass
         
         # configure header if relevant

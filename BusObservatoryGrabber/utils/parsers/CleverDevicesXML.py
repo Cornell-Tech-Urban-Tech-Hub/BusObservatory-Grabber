@@ -56,6 +56,14 @@ class Bus(KeyValueData):
         KeyValueData.__init__(self, **kwargs)
         self.name = 'Bus'
 
+def get_timestamp(tz):
+
+    # https://gist.github.com/ffturan/234730392091c66134aff662c87c152e    
+    import os
+    os.environ['TZ'] = tz
+    time.tzset()
+    return datetime.now()
+
 def get_xml_data(feed):
     import urllib.request
     tries = 1
@@ -63,7 +71,7 @@ def get_xml_data(feed):
         try:
             data = urllib.request.urlopen(feed.url).read()
             if data:
-                timestamp=datetime.now()
+                timestamp=get_timestamp(feed.tz)
                 break
         except Exception as e:
             print (e)
