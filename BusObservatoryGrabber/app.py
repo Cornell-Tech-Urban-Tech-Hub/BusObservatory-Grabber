@@ -31,6 +31,6 @@ def lambda_handler(event, context):
     return {
         "statusCode": 200,
         "body": json.dumps({
-            "message": f"{system_id}: wrote {positions_df[feed.route_key].nunique()} routes and {len(positions_df)} buses from {system_id} to s3://{bucket}/{system_id}/.",
+            "message": f"{system_id}: wrote {positions_df[feed.route_key].nunique()} routes and {len(positions_df)} buses from {system_id} to s3://{bucket}/{system_id}/",
         }),
     }    

@@ -18,7 +18,11 @@ def get_buses(feed):
     # convert dict to dataframe
     positions_df=pd.json_normalize(buses_dict['entity'])
     
-    #FIXME: need to re-use this for NJ, SIRI?
+    # make sure direction doesnt output as an int for nyct_mta_bus_siri
+    try:
+        positions_df = positions_df.astype({"vehicle.trip.direction_id": float})
+    except KeyError:
+        pass
     
     # convert timestamp is 4 steps to get local time recorded properly in parquet
     
@@ -34,5 +38,6 @@ def get_buses(feed):
     
     # 4 make naive again (not sure why this is needed)
     positions_df['vehicle.timestamp'] = positions_df['vehicle.timestamp'].dt.tz_localize(None)
+    
     
     return positions_df
