@@ -12,7 +12,7 @@ obj = s3.Object(
 config = json.load(obj.get()['Body'])
 
 # load jinja template
-environment = Environment(loader=FileSystemLoader("deploy/templates/"))
+environment = Environment(loader=FileSystemLoader("templates/"))
 template = environment.get_template("ScheduledGrabberTemplate.jinja")
 
 # build up the yaml to insert in Events:

@@ -1,3 +1,4 @@
+import os
 import json
 from utils.Feed import *
 from utils.DataLake import *
@@ -5,13 +6,12 @@ from utils.Config import *
 
 def lambda_handler(event, context):
 
-    #TODO: can these fields be abstracted to an environment variable in the template.yaml?
-    #FIXME: for prodiction, switch bucket back
+    # config
+    bucket=os.environ['S3_BUCKET']
+    region=os.environ['AWS_REGION']
     # bucket="busobservatory"
-    bucket="busobservatory-migration"
-    region="us-east-1"
-    config_object_key = "_bus_observatory_config.json"
-    
+    # bucket="busobservatory-migration"
+    config_object_key = "_bus_observatory_config.json"    
     config, system_id = get_config(event, 
                         region,
                         bucket,
