@@ -40,20 +40,14 @@ Takes a config `config/_bus_observatory_config.json`file like
     sam build --use-container && sam local start-api --debug
 ```
 
-Then head over to
+Then head over to:
 
-`http://127.0.0.1:3000/BusObservatoryGrabber?system_id=tfnsw_buses`
-
-or
-
-`http://127.0.0.1:3000/BusObservatoryGrabber?system_id=TEST_tfnsw_bus`
-`http://127.0.0.1:3000/BusObservatoryGrabber?system_id=TEST_njtransit_bus`
-`http://127.0.0.1:3000/BusObservatoryGrabber?system_id=TEST_nyct_mta_bus_siri`
-`http://127.0.0.1:3000/BusObservatoryGrabber?system_id=TEST_nyct_mta_bus_gtfsrt`
+`http://127.0.0.1:3000/BusObservatoryGrabber?system_id=tfnsw_bus`
+`http://127.0.0.1:3000/BusObservatoryGrabber?system_id=njtransit_bus`
+`http://127.0.0.1:3000/BusObservatoryGrabber?system_id=nyct_mta_bus_siri`
+`http://127.0.0.1:3000/BusObservatoryGrabber?system_id=nyct_mta_bus_gtfsrt`
 
 ### cloud
-
-Takes about 2-3 minutes on M1 MacBook Air laptop.
 
 ```
     sam build --use-container &&

@@ -15,6 +15,7 @@ def get_config(event, region, bucket, config_object_key):
         config = json.load(obj.get()['Body'])[system_id]
         return config, system_id
     
+    #FIXME: this isn't actually catching these
     except:
         # this should raise instead?
         return {

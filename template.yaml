@@ -30,11 +30,11 @@ Resources:
             BucketName: 'busobservatory-migration'
         - S3ReadPolicy:
             BucketName: 'busobservatory-migration'
-      Environment:
-        Variables:
-          AWS_REGION: "us-east-1"
-          S3_BUCKET: "busobservatory-migration"
-          # S3_BUCKET: "busobservatory"
+      # Environment:
+      #   Variables:
+      #     REGION: "us-east-1"
+      #     S3_BUCKET: "busobservatory-migration"
+      #     # S3_BUCKET: "busobservatory"
       Events:
         BusObservatoryGrabber:
           Type: Api
