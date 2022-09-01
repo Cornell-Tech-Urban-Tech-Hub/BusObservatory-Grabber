@@ -22,19 +22,14 @@ Resources:
       Architectures:
         - arm64
       Policies:
-        # - S3WritePolicy:
-        #     BucketName: 'busobservatory'
-        # - S3ReadPolicy:
-        #     BucketName: 'busobservatory'
+        - S3WritePolicy:
+            BucketName: 'busobservatory'
+        - S3ReadPolicy:
+            BucketName: 'busobservatory'
         - S3WritePolicy:
             BucketName: 'busobservatory-migration'
         - S3ReadPolicy:
             BucketName: 'busobservatory-migration'
-      # Environment:
-      #   Variables:
-      #     REGION: "us-east-1"
-      #     S3_BUCKET: "busobservatory-migration"
-      #     # S3_BUCKET: "busobservatory"
       Events:
         BusObservatoryGrabber:
           Type: Api
