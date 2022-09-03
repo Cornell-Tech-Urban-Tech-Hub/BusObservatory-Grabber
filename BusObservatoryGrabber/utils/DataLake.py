@@ -16,7 +16,7 @@ def dump_buses(region,
 
     # upload to S3
     source_path=f"/tmp/{filename}" 
-    remote_path=f"incoming/{system_id}/{filename}"  
+    remote_path=f"lake/{system_id}/incoming/{filename}"  
     session = boto3.Session(region_name=region)
     s3 = session.resource('s3')
     result = s3.Bucket(bucket).upload_file(source_path,remote_path)
