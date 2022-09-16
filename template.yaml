@@ -65,6 +65,13 @@ Resources:
             Description: "Universal Grabber event trigger for NJTransit Buses (njtransit_bus)."
             Schedule: rate(1 minute)
             Input: '{"queryStringParameters": {"system_id":"njtransit_bus"}}'
+        ScheduledGrabber5:
+          Type: Schedule
+          Properties:
+            Name: "BusObservatoryGrabber-mbta-all"
+            Description: "Universal Grabber event trigger for MTBA All (mbta_all)."
+            Schedule: rate(1 minute)
+            Input: '{"queryStringParameters": {"system_id":"mbta_all"}}'
 
 Outputs:
   BusObservatoryGrabberApi:
