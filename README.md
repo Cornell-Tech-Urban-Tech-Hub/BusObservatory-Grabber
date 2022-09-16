@@ -3,6 +3,12 @@
 This project contains code and deployment information for a universal feed grabber AWS Lambda function to obtain needed configuration and scrape a bus data feed and write it to an S3 data lake.
 
 Takes a system_id in the query URL and reads config from S3 bucket.
+
+## adding feeds
+
+1. update s3://busobservatory/_bus_observatory_config.json
+2. ./do-cloud.sh (will deploy a new lambda)
+3. re-run the "BusObservatory_All" crawler it will create a new table
  
 ## setup
 Takes a config `config/_bus_observatory_config.json`file like
