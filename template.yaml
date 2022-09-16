@@ -72,6 +72,14 @@ Resources:
             Description: "Universal Grabber event trigger for MTBA All (mbta_all)."
             Schedule: rate(1 minute)
             Input: '{"queryStringParameters": {"system_id":"mbta_all"}}'
+        ScheduledGrabber6:
+          Type: Schedule
+          Properties:
+            Name: "BusObservatoryGrabber-wmata_bus"
+            Description: "Universal Grabber event trigger for WMATA Bus (wmata_bus)."
+            Schedule: rate(1 minute)
+            Input: '{"queryStringParameters": {"system_id":"wmata_bus"}}'
+
 
 Outputs:
   BusObservatoryGrabberApi:

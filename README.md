@@ -6,10 +6,10 @@ Takes a system_id in the query URL and reads config from S3 bucket.
 
 ## adding feeds
 
-1. update s3://busobservatory/_bus_observatory_config.json
-2. add a new scheduledevent to template.yaml (or use the automated template creator)
+1. add a new scheduledevent to template.yaml (or use the automated template creator)
 2. ./do-cloud.sh (will deploy a new lambda)
 3. re-run the "BusObservatory_All" crawler (delete all the old tables first? but why?)
+4. update s3://busobservatory/_bus_observatory_config.json to add to api
  
 ## setup
 Takes a config `config/_bus_observatory_config.json`file like
