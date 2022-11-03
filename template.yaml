@@ -79,6 +79,13 @@ Resources:
             Description: "Universal Grabber event trigger for WMATA Bus (wmata_bus)."
             Schedule: rate(1 minute)
             Input: '{"queryStringParameters": {"system_id":"wmata_bus"}}'
+        ScheduledGrabber7:
+          Type: Schedule
+          Properties:
+            Name: "BusObservatoryGrabber-sf_muni"
+            Description: "Universal Grabber event trigger for San Francisco Muni (sf_muni)."
+            Schedule: rate(1 minute)
+            Input: '{"queryStringParameters": {"system_id":"sf_muni"}}'
 
 
 Outputs:
