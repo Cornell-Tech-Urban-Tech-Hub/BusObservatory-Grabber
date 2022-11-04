@@ -8,7 +8,7 @@ Takes a system_id in the query URL and reads config from S3 bucket.
 1. update config/_bus_observatory_config.json
 2. add a new scheduledevent to template.yaml (or use the automated template creator)
 3. ./do-cloud.sh (will deploy a new lambda)
-4. re-run the "BusObservatory_All" crawler (delete all the old tables first? but why?)
+4. create a new crawler for the feed, based off the WMATA one
 
  
 ## setup
