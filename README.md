@@ -53,6 +53,7 @@ Then head over to:
 `http://127.0.0.1:3000/BusObservatoryGrabber?system_id=njtransit_bus`
 `http://127.0.0.1:3000/BusObservatoryGrabber?system_id=nyct_mta_bus_siri`
 `http://127.0.0.1:3000/BusObservatoryGrabber?system_id=nyct_mta_bus_gtfsrt`
+`http://127.0.0.1:3000/BusObservatoryGrabber?system_id=sf_muni`
 
 ### cloud
 
