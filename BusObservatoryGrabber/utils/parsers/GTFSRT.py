@@ -6,7 +6,10 @@ import requests
 def get_buses(feed):
 
     # get data
-    response = requests.get(feed.url.format(feed.api_key), headers=feed.header)
+    try:
+        response = requests.get(feed.url.format(feed.api_key), headers=feed.header)
+    except:
+        response = requests.get(feed.url, headers=feed.header)
 
     # flatten data
     data = gtfs_realtime_pb2.FeedMessage()
