@@ -1,5 +1,16 @@
 # BusObservatory-Grabber-GTFSRT
 
+## How Timestamps are Stored
+
+Timestamps are naive (e.g. not encoded with a time zone). Each feed configures the grabber function at runtime to run in the local time zone of the system location. Any conversion requires first localizing to the timezone and then converting to the target timezone.
+
+This makes the data easy to use as-is by researchers and our own API doesn't have to convert timestamps when it returns data.
+
+However we anticipate moving to UTC timestamps in the future as it will make cross-city comparison easier and reduce the complexity of configuring the grabber at runtime and the opportunity for errors if the grabber is improperly configured.
+
+
+# Documentation
+
 This project contains code and deployment information for a universal feed grabber AWS Lambda function to obtain needed configuration and scrape a bus data feed and write it to an S3 data lake.
 
 Takes a system_id in the query URL and reads config from S3 bucket.
